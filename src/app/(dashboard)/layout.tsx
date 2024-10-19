@@ -9,8 +9,8 @@ const inter = Poppins({
 });
 
 export const metadata = {
-    title: "Game Crm",
-    description: "Game Crm",
+    title: "Ding-Ding-Crm",
+    description: "Ding-Ding-Crm",
 };
 
 export default async function RootLayout({
@@ -19,11 +19,11 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className={`flex flex-1 dark:bg-black bg-white space-x-3  ${inter.className}`}>
-            <div className="flex-.2 w-full">
+        <div className={`flex flex-1 dark:bg-black bg-white lg:space-x-3  ${inter.className}`}>
+            <div className="lg:flex-.2 lg:w-full">
                 <Sidebar />
             </div>
-            <div className="w-full flex-.9">
+            <div className="w-full flex-1 pr-3 lg:flex-.9">
                 <div className="w-full">
                     <Header />
                     {children}

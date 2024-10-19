@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { FaMoon } from "react-icons/fa";
 import { IoSunny } from "react-icons/io5";
 import Profile from "../svg/Profile";
-
+import Cookies from 'js-cookie'
+import jwt from 'jsonwebtoken' 
+  
 const Header = () => {
+  const [user, setUser] = useState<{ username: string; role: string; credits: number; } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -16,11 +19,11 @@ const Header = () => {
     if (savedMode) {
       setIsDarkMode(savedMode === "true");
       if (savedMode === "true") {
-        document.body.classList.add("dark");
+        document.body.classList.add( "dark");
       }
     }
   }, []);
-
+console.log(user)
   const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
     if (!isDarkMode) {
@@ -31,6 +34,22 @@ const Header = () => {
       localStorage.setItem("dark-mode", "false");
     }
   };
+
+  const handelGetUser = async () => {
+    try {
+      const user=await Cookies.get('userToken')
+      if (user) {
+        const decodedUser:any = jwt.decode(user)
+        setUser(decodedUser)
+      }
+    } catch (error) {
+      
+    }
+  }
+  useEffect(() => {
+    handelGetUser()
+  }, [])
+  
 
   return (
     <>
@@ -71,15 +90,15 @@ const Header = () => {
               <p className="text-gray-900 dark:text-white">
                 Credits :{" "}
                 <span className=" text-gray-700 dark:text-[#dfdfdf9c]">
-                  1000
+                  {user?.credits}
                 </span>
               </p>
           </div>
-          <div className="flex items-center space-x-1.5">
+          {user&&<div className="flex items-center space-x-1.5">
             <Profile />
-            <span className="dark:text-white tracking-wide">Ashish</span>
-            <span className="text-sm dark:text-gray-300 font-normal">(Company)</span>
-          </div>
+            <span className="dark:text-white tracking-wide">{user?.username}</span>
+            <span className="text-sm dark:text-gray-300 font-normal">({user?.role})</span>
+          </div>}
           </div>
       </div>
     </>

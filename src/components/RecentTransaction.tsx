@@ -26,7 +26,7 @@ const RecentTransaction = ({recentTransactions}:any) => {
                                                                     Sender
                                                                 </span>
                                                                 <span className="dark:text-white text-black  text-[.7rem] ">
-                                                                    {item?.sender}
+                                                                    {item?.debtor}
                                                                 </span>
                                                             </div>
                                                             <div className="bg-dark_light_black dark:bg-onDark  px-2 py-1 flex items-center rounded-[.3rem] space-x-4">
@@ -34,12 +34,12 @@ const RecentTransaction = ({recentTransactions}:any) => {
                                                                     Receiver
                                                                 </span>
                                                                 <span className="dark:text-white text-black  text-[.7rem]">
-                                                                    {item?.receiver}
+                                                                    {item?.creditor}
                                                                 </span>
                                                             </div>
                                                         </div>
                                                         <div className="dark:text-white text-black text-xs font-extralight dark:text-opacity-30 pt-2">
-                                                            {item?.date}
+                                                            {new Date(item?.createdAt).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'})}
                                                         </div>
                                                     </div>
                                                 </div>

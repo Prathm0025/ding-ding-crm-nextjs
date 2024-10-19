@@ -4,12 +4,14 @@ import toast from "react-hot-toast";
 import Cookies from 'js-cookie'
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/utils/action";
+import Loader from "@/utils/Load";
+import Image from "next/image";
 
 const Login = () => {
-    const [load,setLoad]=useState(false)
+    const [load, setLoad] = useState(false)
     const [data, setData] = useState({ username: "", password: "" });
     const [hide, setHide] = useState(false);
-    const router=useRouter()
+    const router = useRouter()
     const handelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
@@ -19,55 +21,60 @@ const Login = () => {
         setHide(!hide);
     };
 
-    const handleLogin = async (e:React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const { username, password } = data;
         if (!username || !password) {
-          toast.remove();
-          return toast.error("All fields are required");
+            toast.remove();
+            return toast.error("All fields are required");
         }
         setLoad(true);
-          const response = await loginUser({ username, password });
-          if(response?.error){
+        const response = await loginUser({ username, password });
+        if (response?.error) {
             setLoad(false);
             return toast.error(response.error);
-          }
-          const { token, message, role } = response?.responseData;
-          if (token) {
-            if (role !== "player") {
-              toast.success(message);
-              Cookies.set("userToken", token);
-              router.push("/");
-            } else {
-              toast.remove();
-              toast.error("Access denied");
-            }
-          } else {
-            toast.error("Token not found");
-          }
-          setLoad(false);
         }
+        const { token, message, role } = response?.responseData;
+        if (token) {
+            if (role !== "player") {
+                toast.success(message);
+                Cookies.set("userToken", token);
+                router.push("/");
+            } else {
+                toast.remove();
+                toast.error("Access denied");
+            }
+        } else {
+            toast.error("Token not found");
+        }
+        setLoad(false);
+    }
 
     return (
         <>
             <div
                 className="bg-[#1a1a1d] bg-cover w-full h-screen flex items-center justify-center relative"
             >
-                <div className="relative border-2 border-[#e4e4e42f] bg-[#fff] bg-clip-padding backdrop-filter backdrop-blur-[5px] bg-opacity-10 flex z-[1] items-center justify-center w-[70%] h-[45vh] sm:h-[60vh] lg:w-[25%] sm:min-w-[400px] min-w-[300px] rounded-[1.8vw] p-5">
+                <div className="relative border-2 border-[#27a5ff] bg-[#27a5ff] pb-10 bg-clip-padding backdrop-filter backdrop-blur-[5px] bg-opacity-10   w-[90%] md:w-[55%] lg:w-[45%] xl:w-[35%] 2xl:w-[25%]  rounded-[1.8vw] p-2">
                     <div className="w-full h-full">
-                        <form
-                            onSubmit={handleLogin}
-                            className="absolute top-auto left-0 z-[2] w-full h-[80%] m-auto p-5 flex flex-col items-center justify-evenly"
-                        >
-                            <h1 className="text-center font-semibold text-4xl text-[#fff] drop-shadow-xl">
+                        <div>
+                            <Image src="/assets/images/logo.png" alt="logo" width={600} height={600} quality={100} className="w-[30%] mx-auto" />
+                            <h1 className="text-center font-semibold leading-none text-3xl lg:text-4xl text-[#fff] drop-shadow-xl">
                                 Ding Ding CRM
                             </h1>
+                        </div>
+                        <form
+                            onSubmit={handleLogin}
+                            className="flex flex-col pt-8 items-center justify-evenly"
+                        >
+
+
                             <div className="w-[90%] space-y-10 mx-auto text-white">
                                 <div className="space-y-2">
                                     <label htmlFor="username" className="text-xl font-extralight">
                                         Username
                                     </label>
-                                    <div className="flex items-center space-x-3 border-[1px] border-[#dfdfdfbc] bg-[#dfdfdf37] rounded-md">
+                                    <div className="flex items-center space-x-3 border-[1px] border-[#27a5ff] bg-[#dfdfdf37] rounded-md">
                                         <input
                                             type="text"
                                             name="username"
@@ -75,7 +82,7 @@ const Login = () => {
                                             value={data.username}
                                             onChange={(e) => handelChange(e)}
                                             autoComplete="new-username"
-                                            className="outline-none w-full text-xl px-3 py-2 placeholder:text-xl font-extralight bg-transparent placeholder:font-extralight placeholder:text-white"
+                                            className="outline-none w-full text-xl px-3 py-2 placeholder:text-xl font-extralight bg-transparent placeholder:font-extralight placeholder:text-gray-400"
                                         />
                                     </div>
                                 </div>
@@ -83,7 +90,7 @@ const Login = () => {
                                     <label htmlFor="password" className="text-xl font-extralight">
                                         Password
                                     </label>
-                                    <div className="flex items-center space-x-3 border-[1px] border-[#dfdfdfbc] bg-[#dfdfdf37] rounded-md">
+                                    <div className="flex items-center space-x-3 border-[1px] border-[#27a5ff] bg-[#dfdfdf37] rounded-md">
                                         <input
                                             type={hide ? "text" : "password"}
                                             name="password"
@@ -91,7 +98,7 @@ const Login = () => {
                                             value={data.password}
                                             onChange={(e) => handelChange(e)}
                                             autoComplete="new-password"
-                                            className="outline-none w-full text-xl px-3 py-2 placeholder:text-xl font-extralight bg-transparent placeholder:font-extralight placeholder:text-white"
+                                            className="outline-none w-full text-xl px-3 py-2 placeholder:text-xl font-extralight bg-transparent placeholder:font-extralight placeholder:text-gray-400"
                                         />
                                         {data.password.length > 0 && (
                                             <div className="p-2">
@@ -139,7 +146,7 @@ const Login = () => {
                                 <div className="flex justify-center">
                                     <button
                                         type="submit"
-                                        className="text-center bg-gradient-to-r from-[#8C7CFD] hover:from-[#BC89F1] hover:to-[#8C7CFD] to-[#BC89F1] mx-auto text-white text-xl rounded-md py-2 font-light hover:shadow-[0_30px_10px_-15px_rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out w-full"
+                                        className="text-center bg-[#27a5ff]   mx-auto text-white font-semibold text-xl rounded-md py-2 hover:bg-opacity-50  transition-all duration-200 ease-in-out w-full"
                                     >
                                         LOGIN
                                     </button>
@@ -149,6 +156,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            {load && <Loader />}
         </>
     );
 };
