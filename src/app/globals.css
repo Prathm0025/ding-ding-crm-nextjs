@@ -46,3 +46,23 @@
       stroke-dashoffset: -125px;
     }
   }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #27a5ff;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background:#27a5ff;
+  }
+
+  .dark{
+    background-color: black;
+  }

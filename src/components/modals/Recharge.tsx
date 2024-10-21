@@ -34,7 +34,7 @@ const Recharge = ({ id, closeModal,modalType }: any) => {
                 onSubmit={(e)=>handleSubmit(e)}
                 className="grid grid-cols-2 space-x-2 md:space-x-0 md:gap-4 overflow-hidden px-5"
             >
-                <p className="text-left font-light">{modalType} Amount : </p>
+                <p className="text-left font-light dark:text-white">{modalType} Amount : </p>
                 <input
                     type="number"
                     name="recharge"
@@ -45,7 +45,7 @@ const Recharge = ({ id, closeModal,modalType }: any) => {
                 <div className="col-span-2 flex justify-center mt-2">
                     <button
                         type="submit"
-                        className="text-center flex justify-center px-4 items-center gap-2 bg-gradient-to-r from-[#8C7CFD] hover:from-[#BC89F1] hover:to-[#8C7CFD] to-[#BC89F1] mx-auto text-white text-xl rounded-md p-2 font-light hover:shadow-[0_30px_10px_-15px_rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out"
+                        className="text-center flex justify-center px-8 hover:bg-opacity-45 items-center gap-2 bg-[#27a5ff]   mx-auto text-white text-xl rounded-md p-2 font-light  transition-all duration-200 ease-in-out"
                     >
                         Submit
                     </button>

@@ -4,8 +4,9 @@ import { FaMoon } from "react-icons/fa";
 import { IoSunny } from "react-icons/io5";
 import Profile from "../svg/Profile";
 import Cookies from 'js-cookie'
-import jwt from 'jsonwebtoken' 
-  
+import jwt from 'jsonwebtoken'
+import Hamburger from "../svg/Hamburger";
+
 const Header = () => {
   const [user, setUser] = useState<{ username: string; role: string; credits: number; } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -19,7 +20,7 @@ const Header = () => {
     if (savedMode) {
       setIsDarkMode(savedMode === "true");
       if (savedMode === "true") {
-        document.body.classList.add( "dark");
+        document.body.classList.add("dark");
       }
     }
   }, []);
@@ -37,31 +38,34 @@ const Header = () => {
 
   const handelGetUser = async () => {
     try {
-      const user=await Cookies.get('userToken')
+      const user = await Cookies.get('userToken')
       if (user) {
-        const decodedUser:any = jwt.decode(user)
+        const decodedUser: any = jwt.decode(user)
         setUser(decodedUser)
       }
     } catch (error) {
-      
+
     }
   }
   useEffect(() => {
     handelGetUser()
   }, [])
-  
+
 
   return (
     <>
-        <div className="w-full mx-auto flex bg-gray-100 dark:bg-gray-800 px-5 py-3 justify-between items-center">
-          <div className="">
-            <div className="text-black dark:text-white text-[1.5rem] leading-tight font-semibold">
-              Dashboard
-            </div>
-            <span className="dark:text-white text-black text-opacity-75 text-[.9rem] dark:text-opacity-60">Ding Ding CRM</span>
+      <div className="w-full mx-auto flex bg-gray-100 dark:bg-gray-800 px-5 py-3 justify-between items-center">
+        <button className="lg:hidden">
+          <Hamburger />
+        </button>
+        <div className="lg:block hidden">
+          <div className="text-black dark:text-white text-[1.5rem] leading-tight font-semibold">
+            Dashboard
           </div>
-          <div className="flex items-center space-x-4">
-          {mounted&&<label
+          <span className="dark:text-white text-black text-opacity-75 text-[.9rem] dark:text-opacity-60">Ding Ding CRM</span>
+        </div>
+        <div className="flex items-center space-x-4">
+          {mounted && <label
             htmlFor="dark-mode-toggle"
             className="flex items-center cursor-pointer"
           >
@@ -86,20 +90,20 @@ const Header = () => {
               </div>
             </div>
           </label>}
-            <div className="dark:bg-[#dfdfdf24] py-1 px-4 rounded-md bg-gray-300 text-black text-opacity-60 dark:text-white  text-lg">
-              <p className="text-gray-900 dark:text-white">
-                Credits :{" "}
-                <span className=" text-gray-700 dark:text-[#dfdfdf9c]">
-                  {user?.credits}
-                </span>
-              </p>
+          <div className="dark:bg-[#dfdfdf24] py-1 px-4 rounded-md bg-gray-300 text-black text-opacity-60 dark:text-white  text-lg">
+            <p className="text-gray-900 dark:text-white">
+              Credits :{" "}
+              <span className=" text-gray-700 dark:text-[#dfdfdf9c]">
+                {user?.credits}
+              </span>
+            </p>
           </div>
-          {user&&<div className="flex items-center space-x-1.5">
+          {user && <div className="lg:flex hidden items-center space-x-1.5">
             <Profile />
             <span className="dark:text-white tracking-wide">{user?.username}</span>
             <span className="text-sm dark:text-gray-300 font-normal">({user?.role})</span>
           </div>}
-          </div>
+        </div>
       </div>
     </>
   );

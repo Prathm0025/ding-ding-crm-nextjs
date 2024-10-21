@@ -30,7 +30,7 @@ const UpdateStatus = ({ id, closeModal,prevStatus }: any) => {
                 onSubmit={(e)=>handleSubmit(e)}
                 className="grid grid-cols-2 md:gap-4 overflow-hidden px-5"
             >
-                <p className="text-left font-light">Status : </p>
+                <p className="text-left font-light  dark:text-white">Status : </p>
                 <div className="flex gap-2 md:gap-5 items-center">
                     <div className="min-w-fit w-[30%] flex gap-2">
                         <input
@@ -41,7 +41,7 @@ const UpdateStatus = ({ id, closeModal,prevStatus }: any) => {
                             value="active"
                             onChange={(e) => setStatus(e.target.value)}
                         />
-                        <label htmlFor="active">Active</label>
+                        <label htmlFor="active" className="text-green-500">Active</label>
                     </div>
                     <div className="min-w-fit w-[30%] flex gap-2">
                         <input
@@ -52,13 +52,13 @@ const UpdateStatus = ({ id, closeModal,prevStatus }: any) => {
                             value="inactive"
                             onChange={(e) => setStatus(e.target.value)}
                         />
-                        <label htmlFor="inactive">Inactive</label>
+                        <label htmlFor="inactive" className="text-red-600">Inactive</label>
                     </div>
                 </div>
                 <div className="col-span-2 flex justify-center mt-2">
                     <button
                         type="submit"
-                        className="text-center flex justify-center px-4 items-center gap-2 bg-gradient-to-r from-[#8C7CFD] hover:from-[#BC89F1] hover:to-[#8C7CFD] to-[#BC89F1] mx-auto text-white text-xl rounded-md p-2 font-light hover:shadow-[0_30px_10px_-15px_rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out"
+                        className="text-center flex justify-center px-8 hover:bg-opacity-45 items-center gap-2  mx-auto bg-[#27a5ff]  text-white text-xl rounded-md p-2 font-light  transition-all duration-200 ease-in-out"
                     >
                         Submit
                     </button>

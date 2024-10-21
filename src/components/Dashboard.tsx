@@ -14,7 +14,6 @@ const Dashboard = () => {
     const [reporttype, setReportType] = useState('daily')
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>({});
-    console.log(data)
     const card = [
         {
             title: 'Recharge',
@@ -70,7 +69,7 @@ const Dashboard = () => {
                 <div className='grid grid-cols-12 pt-5 gap-4'>
                     {
                         card?.map((item, ind) => (
-                            <div key={ind} className='p-4 rounded-lg bg-white dark:bg-gray-700 col-span-3'>
+                            <div key={ind} className='p-4 rounded-lg bg-white dark:bg-gray-700 col-span-6 lg:col-span-4 xl:col-span-3'>
                                 <div className='flex justify-start space-x-2 items-center'>
                                     {item?.icon}
                                     <div className='dark:text-white text-xl text-black'>{item?.title}</div>

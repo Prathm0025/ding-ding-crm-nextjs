@@ -3,7 +3,7 @@ import { deleteClient } from '@/utils/action'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
-const DeleteUser = ({ id, closeModal, Username }: any) => {
+const DeleteUser = ({ id, closeModal, Username,deletePayout }: any) => {
     const [load, setLoad] = useState(false)
     const handleDelete = async (id: string) => {
         try {
@@ -34,7 +34,7 @@ const DeleteUser = ({ id, closeModal, Username }: any) => {
                     </button>
                     <button
                         className="px-4 py-2 rounded-md  bg-red-500 dark:bg-red-600 text-white hover:bg-opacity-75 dark:text-white"
-                        onClick={() => handleDelete(id)}
+                        onClick={() => deletePayout?deletePayout():handleDelete(id)}
                     >
                         Delete
                     </button>
