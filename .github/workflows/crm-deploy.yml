@@ -28,7 +28,7 @@ jobs:
             sudo -i
             
             # Navigate to the CRM project directory in the root
-            cd /ding-ding-crm-nextjs
+            cd ding-ding-crm-nextjs
             
             # Pull the latest changes from the dev branch
             git pull origin dev
