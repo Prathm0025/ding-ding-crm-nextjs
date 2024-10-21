@@ -4,21 +4,24 @@ import Threedots from './svg/Threedots'
 import Delete from './svg/Delete'
 import Modal from './Modal'
 import ChangePassword from './modals/ChangePassword'
+import Recharge from './modals/Recharge'
+import UpdateStatus from './modals/UpdateStatus'
+import DeleteUser from './modals/DeleteUser'
 
 const Table = ({ data, tableData }: any) => {
     const [openIndex, setOpenIndex] = useState(null); // State to track which dropdown is open
-    const [modalType, setModalType] = useState({ Type: "", id: '' })
-    const [openmodal,setOpenModal]=useState(false)
+    const [modalType, setModalType] = useState({ Type: "", id: '', prevStatus: '', Username: '' })
+    const [openmodal, setOpenModal] = useState(false)
     const handleOpen = (index: any) => {
         setOpenIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle the dropdown for the clicked index
     };
 
-    const buttons=['Change  Password','Recharge','Redeem','Update Status']
-    const handelOpenModal = (type:string,id:string) => {
-        setModalType({ Type: type, id: id })
+    const buttons = ['Change  Password', 'Recharge', 'Redeem', 'Update Status']
+    const handelOpenModal = (type: string, id: string, prevStatus: string, Username: string) => {
+        setModalType({ Type: type, id: id, prevStatus: prevStatus, Username: Username })
         setOpenModal(true)
         setOpenIndex(null);
-    } 
+    }
 
     const handelCloseModal = () => {
         setOpenModal(false)
@@ -26,41 +29,23 @@ const Table = ({ data, tableData }: any) => {
 
     let ModalContent;
     switch (modalType?.Type) {
-      case "Change  Password":
+        case "Change  Password":
             ModalContent = <ChangePassword id={modalType?.id} closeModal={handelCloseModal} />;
-        break;
-  
-    //   case "Recharge Client":
-    //     ModalContent = <Recharge setOpen={setOpen} id={rowData._id} />;
-    //     break;
-  
-    //   case "Redeem Client":
-    //     ModalContent = <Redeem setOpen={setOpen} id={rowData._id} />;
-    //     break;
-  
-    //   case "Update Status":
-    //     ModalContent = (
-    //       <ClientStatus
-    //         setOpen={setOpen}
-    //         id={rowData._id}
-    //         prevStatus={rowData.status}
-    //       />
-    //     );
-    //     break;
-  
-    //   case "Delete":
-    //     ModalContent = (
-    //       <DeleteModal
-    //         title="user"
-    //         setOpen={setOpen}
-    //         id={rowData._id}
-    //         handleDelete={handleDelete}
-    //       />
-    //     );
-    //     break;
-  
-      default:
-        ModalContent = null;
+            break;
+        case "Recharge":
+            ModalContent = <Recharge id={modalType?.id} closeModal={handelCloseModal} modalType={modalType?.Type} />;
+            break;
+        case "Redeem":
+            ModalContent = <Recharge id={modalType?.id} closeModal={handelCloseModal} modalType={modalType?.Type} />;
+            break;
+        case "Update Status":
+            ModalContent = <UpdateStatus id={modalType?.id} closeModal={handelCloseModal} prevStatus={modalType?.prevStatus} />;
+            break;
+        case "delete_client":
+            ModalContent=<DeleteUser id={modalType?.id} closeModal={handelCloseModal} Username={modalType?.Username} />
+            break;
+        default:
+            ModalContent = null;
     }
 
     return (
@@ -117,7 +102,7 @@ const Table = ({ data, tableData }: any) => {
                                 <td>
                                     <div className='flex items-center justify-start pl-5 space-x-5'>
                                         <div className='relative'>
-                                            <button onClick={() => handleOpen(ind)} className=' hover:bg-black transition-all text-[#27a5ff] p-1 rounded-lg '>
+                                            <button onClick={() => handleOpen(ind)} className=' hover:bg-gray-200 dark:hover:bg-black transition-all text-[#27a5ff] p-1 rounded-lg '>
                                                 <Threedots />
                                             </button>
                                             <div className={`z-10 ${openIndex === ind ? 'scale-100' : 'scale-0'} z-[51] transition-all absolute  bottom-0 right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
@@ -125,7 +110,7 @@ const Table = ({ data, tableData }: any) => {
                                                     {
                                                         buttons.map((button, index) => (
                                                             <li key={index}>
-                                                                <button onClick={()=>handelOpenModal(button,item?._id)} className={`block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md text-start dark:hover:text-white ${button === 'Change Password'? 'text-blue-600' : ''}`}>
+                                                                <button onClick={() => handelOpenModal(button, item?._id, item?.status, '')} className={`block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md text-start dark:hover:text-white ${button === 'Change Password' ? 'text-blue-600' : ''}`}>
                                                                     {button}
                                                                 </button>
                                                             </li>
@@ -134,8 +119,7 @@ const Table = ({ data, tableData }: any) => {
                                                 </ul>
                                             </div>
                                         </div>
-
-                                        <button className='hover:bg-black transition-all text-red-600 p-1  rounded-lg'>
+                                        <button onClick={() => handelOpenModal('delete_client', item?._id, '', item?.username)} className='transition-all hover:bg-gray-200 dark:hover:bg-black text-red-600 p-1  rounded-lg'>
                                             <Delete />
                                         </button>
                                     </div>

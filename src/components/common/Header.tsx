@@ -23,7 +23,7 @@ const Header = () => {
       }
     }
   }, []);
-console.log(user)
+
   const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
     if (!isDarkMode) {

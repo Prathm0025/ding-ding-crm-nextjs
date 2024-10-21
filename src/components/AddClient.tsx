@@ -124,7 +124,7 @@ const AddClient = () => {
             <div className="absolute top-[50%] left-[50%] w-[95%]  lg:w-[45%] xl:w-[40%] lg:left-[60%] translate-y-[-50%] translate-x-[-50%] ">
                 <form
                     onSubmit={(e) => handleSubmit(e)}
-                    className="grid grid-cols-2 gap-4 gap-y-10 overflow-hidden w-[90%] md:w-[70%] lg:w-[100%] dark:bg-gray-700 bg-white shadow-xl  m-auto px-16 py-12 rounded-2xl text-black dark:text-white border-[#27a5ff] border-[2px]"
+                    className="grid grid-cols-2 gap-4 gap-y-10 overflow-hidden w-[90%] md:w-[70%] lg:w-[100%] dark:bg-gray-700 bg-white shadow-xl  m-auto px-16 py-12 rounded-2xl text-black dark:text-white border-[#27a5ff] border-[3px]"
                 >
                     <p className="text-left font-light">Username :</p>
                     <input

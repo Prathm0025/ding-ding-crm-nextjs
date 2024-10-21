@@ -183,81 +183,85 @@ export const editPassword = async (existingPassword:string, password:string, id:
   }
 };
 
-// export const deleteClient = async (id) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(`${config.server}/api/users/${id}`, {
-//       method: "DELETE",
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Cookie: `userToken=${token}`,
-//       },
-//     });
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
-//     return { data };
-//   } catch (error) {
-//     console.log("error:", error);
-//   } finally {
-//     revalidatePath("/clients/all");
-//   }
-// };
+export const editCredits = async (credits:any, id:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ credits: credits }),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const responseData = await response.json();
+    return { responseData };
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    revalidateTag("client");
+  }
+};
+
+
+export const editStatus = async (status:string, id:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ status: status }),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const responseData = await response.json();
+    return { responseData };
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    revalidateTag("client");
+  }
+};
+
+export const deleteClient = async (id:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/users/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.log("error:", error);
+  } finally {
+    revalidatePath("/clients/all");
+  }
+};
 
 
 
-// export const editCredits = async (credits, id) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(`${config.server}/api/users/${id}`, {
-//       method: "PUT",
-//       body: JSON.stringify({ credits: credits }),
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Cookie: `userToken=${token}`,
-//       },
-//     });
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const responseData = await response.json();
-//     return { responseData };
-//   } catch (error) {
-//     console.log("error", error);
-//   } finally {
-//     revalidateTag("client");
-//   }
-// };
 
-// export const editStatus = async (status, id) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(`${config.server}/api/users/${id}`, {
-//       method: "PUT",
-//       body: JSON.stringify({ status: status }),
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Cookie: `userToken=${token}`,
-//       },
-//     });
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const responseData = await response.json();
-//     return { responseData };
-//   } catch (error) {
-//     console.log("error", error);
-//   } finally {
-//     revalidateTag("client");
-//   }
-// };
+
 
 // export const getSubordinateTransactions = async (id, page) => {
 //   const token = await getCookie();

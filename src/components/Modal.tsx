@@ -15,7 +15,7 @@ const Modal = ({ closeModal, modaltype, children }: any) => {
             <div className='relative w-full h-screen'>
                 <div
                     onClick={(e) => e.stopPropagation()} 
-                    className="absolute bg-gray-700 rounded-xl p-4 w-full top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-2xl max-h-full"
+                    className="absolute bg-white dark:bg-gray-700 rounded-xl p-4 w-full top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-2xl max-h-full"
                 >
                     {children}
                 </div>
