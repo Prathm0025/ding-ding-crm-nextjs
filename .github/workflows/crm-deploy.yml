@@ -1,0 +1,38 @@
+name: Deploy CRM
+
+on:
+  pull_request:
+    branches:
+      - dev  # Change to dev branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no root@3.110.140.210 << 'EOF'
+            # Navigate to the CRM project directory
+            cd ~/ding-ding-crm-nextjs
+            
+            # Pull the latest changes from the dev branch
+            git pull origin dev
+            
+            # Stop existing containers and remove them
+            docker-compose down
+            
+            # Build and start the containers in detached mode
+            docker-compose up --build -d
+            
+            # Optional: Clean up unused Docker images and containers (comment out if not needed)
+            # docker image prune -f
+          EOF
