@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no root@3.110.140.210 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@3.110.140.210 << 'EOF'
             # Navigate to the CRM project directory
             cd ~/ding-ding-crm-nextjs
             
