@@ -24,8 +24,11 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@3.110.140.210 << 'EOF'
-            # Navigate to the CRM project directory
-            cd ~/ding-ding-crm-nextjs
+            # Switch to root user
+            sudo -i
+            
+            # Navigate to the CRM project directory in the root
+            cd /ding-ding-crm-nextjs
             
             # Pull the latest changes from the dev branch
             git pull origin dev
