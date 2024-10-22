@@ -10,25 +10,48 @@ import toast from 'react-hot-toast'
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
 
-const Dashboard = () => {
+const Dashboard = ({ subordinates_id }: any) => {
     const [reporttype, setReportType] = useState('daily')
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<any>({});
-    console.log(data)
-    const card = [
+    const card =data?.role === 'player' ? [
         {
             title: 'Recharge',
-            amount: data?.recharge,
+            amount: data?.recharge || 0,
             icon: <Recharge />
         },
         {
             title: 'Redeem',
-            amount: data?.redeem,
+            amount: data?.redeem || 0,
+            icon: <Redeem />
+        },
+        ] : subordinates_id&&data?.role !== 'player' ? [{
+            title: 'Recharge',
+            amount: data?.recharge || 0,
+            icon: <Recharge />
+        },
+        {
+            title: 'Redeem',
+            amount: data?.redeem || 0,
+            icon: <Redeem />
+        },{
+            title: 'Clients',
+            amount: data?.users ? Object?.values(data?.users)?.reduce((acc: any, value: any) => acc + value, 0) : 0,
+            icon: <Clients />
+        }] : [
+        {
+            title: 'Recharge',
+            amount: data?.recharge || 0,
+            icon: <Recharge />
+        },
+        {
+            title: 'Redeem',
+            amount: data?.redeem || 0,
             icon: <Redeem />
         },
         {
             title: 'Clients',
-            amount: 0,
+            amount: data?.users ? Object?.values(data?.users)?.reduce((acc: any, value: any) => acc + value, 0) : 0,
             icon: <Clients />
         },
         {
@@ -44,7 +67,7 @@ const Dashboard = () => {
             const user: any = await Cookies.get('userToken')
             if (user) {
                 const userid: any = jwt.decode(user)
-                const response = await getUserReport(userid?.id, reporttype);
+                const response = await getUserReport(subordinates_id ? subordinates_id : userid?.id, reporttype);
                 setLoading(false);
                 if (response?.error) {
                     return toast.error(response.error);
@@ -52,13 +75,13 @@ const Dashboard = () => {
                 setData(response);
             }
         })();
-    }, [reporttype]);
+    }, [reporttype, subordinates_id]);
 
     return (
-        <div className='py-2 '>
+        <div className='py-2'>
             <div className='p-2  h-full bg-gray-100  dark:bg-gray-800'>
                 <div className='flex items-center justify-between'>
-                    <div className=' dark:text-white text-[1.2rem]'>Daily Report</div>
+                    <div className=' dark:text-white text-[1.2rem] capitalize'>{reporttype} Report</div>
                     <div>
                         <select onChange={(e) => setReportType(e.target.value)} className='px-8 bg-gray-300 rounded-md dark:bg-gray-700 outline-none dark:text-white text-black py-1.5'>
                             <option value="daily">Daily</option>
@@ -70,7 +93,7 @@ const Dashboard = () => {
                 <div className='grid grid-cols-12 pt-5 gap-4'>
                     {
                         card?.map((item, ind) => (
-                            <div key={ind} className='p-4 rounded-lg bg-white dark:bg-gray-700 col-span-3'>
+                            <div key={ind} className='p-4 rounded-lg bg-white dark:bg-gray-700 col-span-6 lg:col-span-4 xl:col-span-3'>
                                 <div className='flex justify-start space-x-2 items-center'>
                                     {item?.icon}
                                     <div className='dark:text-white text-xl text-black'>{item?.title}</div>
@@ -79,7 +102,6 @@ const Dashboard = () => {
                             </div>
                         ))
                     }
-
                 </div>
                 <div className='pt-5 grid grid-cols-12 gap-4 h-full'>
                     <RecentTransaction recentTransactions={data?.transactions} />
