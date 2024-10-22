@@ -28,7 +28,7 @@ jobs:
             sudo -i
 
             # Check if the repository exists, if not clone the dev branch directly
-            git clone -b dev git@github.com:Prathm0025/ding-ding-crm-nextjs.git
+            git clone -b dev git@github.com:DingDingHouse/ding-ding-crm-nextjs.git
             
             cd /root/ding-ding-crm-nextjs
             git checkout dev
