@@ -8,9 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineCloudDone, MdOutlineDriveFolderUpload } from "react-icons/md";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-// import Delete from "./DeleteModal";
 import { FaCircle } from "react-icons/fa6";
-// import Loader from "../Loader";
 import Threedots from "../svg/Threedots";
 import Delete from "../svg/Delete";
 import Loader from "@/utils/Load";
@@ -170,14 +168,14 @@ const GamePayout = ({ tagname, platform, closeModal }: any) => {
                 )}
             </form>
             <div className="flex flex-col gap-2">
-                <h4 className="text-xl font-md py-2">Payouts Versions: </h4>
+                <h4 className="text-xl font-md py-2 dark:text-white">Payouts Versions: </h4>
                 <div className="max-h-[200px] min-h-[200px] overflow-auto flex flex-col gap-2">
                     {payoutData ? (
                         payoutData?.length > 0 &&
                         payoutData?.map((item: any, index: number) => (
                             <div
                                 key={index}
-                                className="flex w-full justify-between px-4 py-1 text-md bg-gray-300 dark:bg-[#5d535324] rounded-md"
+                                className="flex w-full justify-between px-4 py-1 text-md bg-gray-100 hover:bg-gray-200 dark:bg-[#5d535324] rounded-md"
                             >
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-3">
@@ -187,10 +185,10 @@ const GamePayout = ({ tagname, platform, closeModal }: any) => {
                                                 : "text-[#ef4444]"
                                                 }`}
                                         >
-                                            <FaCircle />
+                                            <FaCircle size={12}/>
                                         </span>
                                         <div>
-                                            <p>{item.name}</p>
+                                            <p className="dark:text-white">{item.name}</p>
                                             <p className="text-[#1914148e] dark:text-[#cfc6c686] text-[12px]">
                                                 {formatDate(item.createdAt)}
                                             </p>
@@ -222,12 +220,12 @@ const GamePayout = ({ tagname, platform, closeModal }: any) => {
                             </div>
                         ))
                     ) : (
-                        'Loading....'
+                        <Loader />
                     )}
                 </div>
             </div>
             {submodalOpen && <Modal closeModal={handelCloseModal} modaltype={modalType} >{ModalContent}</Modal>}
-            {openIndex !== null && <div onClick={() => handleOpen(null)} className='bg-black fixed top-0 bg-opacity-35 left-0 w-full h-full z-[50]'></div>}
+            {openIndex !== null && <div onClick={() => handleOpen(null)} className='bg-black rounded-xl fixed top-0 bg-opacity-35 left-0 w-full h-full z-[50]'></div>}
             {load && <Loader />}
         </div>
     );

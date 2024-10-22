@@ -6,11 +6,18 @@ import Profile from "../svg/Profile";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken'
 import Hamburger from "../svg/Hamburger";
+import Setting from "../svg/Setting";
+import Modal from "../Modal";
+import Add_Platform from "../modals/Add_Platform";
+import Maintenance from "../modals/Maintenance";
 
 const Header = () => {
   const [user, setUser] = useState<{ username: string; role: string; credits: number; } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [opensetting, setOpenSetting] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [modaltype, setModalType] = useState('');
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -51,6 +58,28 @@ const Header = () => {
     handelGetUser()
   }, [])
 
+  const handelCloseModal = () => {
+    setOpenModal(false)
+  }
+
+  const handelOpenModal = (type: string) => {
+    setOpenModal(true)
+    setModalType(type)
+    setOpenSetting(false)
+  }
+
+  let ModalContent;
+  switch (modaltype) {
+    case "Add_Platform":
+      ModalContent = <Add_Platform closeModal={handelCloseModal} />;
+      break;
+    case "Under_Maintenance":
+      ModalContent = <Maintenance fetchDate={true} closeModal={handelCloseModal}/>
+      break;
+    default:
+      ModalContent = null;
+  }
+
 
   return (
     <>
@@ -65,6 +94,13 @@ const Header = () => {
           <span className="dark:text-white text-black text-opacity-75 text-[.9rem] dark:text-opacity-60">Ding Ding CRM</span>
         </div>
         <div className="flex items-center space-x-4">
+          <div className="relative pt-2">
+            <button onClick={() => setOpenSetting(!opensetting)} className="dark:text-gray-50 text-gray-700 inline-block" ><Setting /></button>
+            <div className={`${opensetting ? 'scale-100 ' : 'scale-0'} transition-all rounded-xl bg-gray-200  p-2 z-[52] text-base min-w-[200px] right-0 space-y-2 absolute top-[100%] dark:bg-gray-600`}>
+              <button onClick={() => handelOpenModal('Add_Platform')} className="w-full py-1.5 dark:hover:bg-gray-500 hover:bg-gray-300 rounded-md dark:text-white">Add Platform</button>
+              <button onClick={() => handelOpenModal('Under_Maintenance')} className="w-full py-1.5  dark:hover:bg-gray-500 hover:bg-gray-300 rounded-md dark:text-white">Under Maintenance</button>
+            </div>
+          </div>
           {mounted && <label
             htmlFor="dark-mode-toggle"
             className="flex items-center cursor-pointer"
@@ -105,6 +141,8 @@ const Header = () => {
           </div>}
         </div>
       </div>
+      {openModal && <Modal closeModal={handelCloseModal}>{ModalContent}</Modal>}
+      {opensetting && <div onClick={() => setOpenSetting(!opensetting)} className='bg-black fixed top-0 bg-opacity-35 left-0 w-full h-screen z-[50]'></div>}
     </>
   );
 };

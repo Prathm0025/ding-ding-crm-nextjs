@@ -10,10 +10,11 @@ import DeleteUser from './modals/DeleteUser'
 import Image from 'next/image'
 import EditGames from './modals/EditGames'
 import GamePayout from './modals/GamePayout'
+import Link from 'next/link'
 
 const Table = ({ data, tableData, page, gamePlatform }: any) => {
     const [openIndex, setOpenIndex] = useState(null); // State to track which dropdown is open
-    const [modalType, setModalType] = useState({ Type: "", id: '', prevStatus: '', Username: '', PrevGameData: null,TagName:'' })
+    const [modalType, setModalType] = useState({ Type: "", id: '', prevStatus: '', Username: '', PrevGameData: null,TagName:'',platform:'',gameName:'' })
     const [openmodal, setOpenModal] = useState(false)
     const handleOpen = (index: any) => {
         setOpenIndex((prevIndex) => (prevIndex === index ? null : index)); // Toggle the dropdown for the clicked index
@@ -21,8 +22,8 @@ const Table = ({ data, tableData, page, gamePlatform }: any) => {
 
     const buttons = page === 'game' ? ['Edit Game', 'Manage Payout'] : ['Change  Password', 'Recharge', 'Redeem', 'Update Status']
 
-    const handelOpenModal = (type: string, id: string, prevStatus: string, Username: string, prevGameData: any,TagName:string) => {
-        setModalType({ Type: type, id: id, prevStatus: prevStatus, Username: Username, PrevGameData: prevGameData,TagName:TagName })
+    const handelOpenModal = (type: string, id: string, prevStatus: string, Username: string, prevGameData: any,TagName:string,Platform:string,gameName:string) => {
+        setModalType({ Type: type, id: id, prevStatus: prevStatus, Username: Username, PrevGameData: prevGameData,TagName:TagName,platform:Platform,gameName:gameName });
         setOpenModal(true)
         setOpenIndex(null);
     }
@@ -46,7 +47,7 @@ const Table = ({ data, tableData, page, gamePlatform }: any) => {
             ModalContent = <UpdateStatus id={modalType?.id} closeModal={handelCloseModal} prevStatus={modalType?.prevStatus} />;
             break;
         case "delete_client":
-            ModalContent = <DeleteUser id={modalType?.id} closeModal={handelCloseModal} Username={modalType?.Username} />
+            ModalContent = <DeleteUser id={modalType?.id} closeModal={handelCloseModal} Username={modalType?.Username} platform={modalType?.platform} gameName={modalType?.gameName} />
             break;
         case "Edit Game":
             ModalContent = <EditGames id={modalType?.id} closeModal={handelCloseModal} platform={gamePlatform} prevData={modalType?.PrevGameData} />
@@ -106,7 +107,7 @@ const Table = ({ data, tableData, page, gamePlatform }: any) => {
 
                                     return (
                                         <td key={td} className={tdClass}>
-                                            {td === "updatedAt" ? new Date(item[td]).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : td === 'thumbnail' ? <Image src={item[td]} alt={item[td]} width={400} height={400} className='w-[80px]' /> : item[td]}
+                                            {td === "updatedAt" ? new Date(item[td]).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : td === 'thumbnail' ? <Image src={item[td]} alt={item[td]} width={400} height={400} className='w-[80px]' />:td==='username'?<Link href={`/clients/${item?._id}`} className='hover:text-[#27a5ff] hover:scale-110 inline-block transition-all'>{item[td]}</Link> : item[td]}
                                         </td>
                                     );
                                 })}
@@ -122,7 +123,7 @@ const Table = ({ data, tableData, page, gamePlatform }: any) => {
                                                     {
                                                         buttons.map((button, index) => (
                                                             <li key={index}>
-                                                                <button onClick={() => handelOpenModal(button, item?._id, item?.status, '', item,item?.tagName)} className={`block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md text-start dark:hover:text-white ${button === 'Change Password' ? 'text-blue-600' : ''}`}>
+                                                                <button onClick={() => handelOpenModal(button, item?._id, item?.status, '', item,item?.tagName,'','')} className={`block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md text-start dark:hover:text-white ${button === 'Change Password' ? 'text-blue-600' : ''}`}>
                                                                     {button}
                                                                 </button>
                                                             </li>
@@ -131,7 +132,7 @@ const Table = ({ data, tableData, page, gamePlatform }: any) => {
                                                 </ul>
                                             </div>
                                         </div>
-                                        <button onClick={() => handelOpenModal('delete_client', item?._id, '', item?.username, '','')} className='transition-all hover:bg-gray-200 dark:hover:bg-black text-red-600 p-1  rounded-lg'>
+                                        <button onClick={() => handelOpenModal('delete_client', item?._id, '', item?.username, '','',gamePlatform,(page==='game'&&item?.name))} className='transition-all hover:bg-gray-200 dark:hover:bg-black text-red-600 p-1  rounded-lg'>
                                             <Delete />
                                         </button>
                                     </div>

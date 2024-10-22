@@ -488,141 +488,214 @@ export const setPayoutActive = async (tagname:string, version:string, platform:s
   }
 };
 
-// export const getSubordinateTransactions = async (id, page) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(
-//       `${config.server}/api/transactions/${id}?page=${page}`,
-//       {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Cookie: `userToken=${token}`,
-//         },
-//         next: { tags: ["client"] },
-//       }
-//     );
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//     return { data };
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// };
-
-// export const getSubordinateClients = async (id, page) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(
-//       `${config.server}/api/users/subordinates?id=${id}&page=${page}`,
-//       {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Cookie: `userToken=${token}`,
-//         },
-//         next: { tags: ["client"] },
-//       }
-//     );
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//     return { data };
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// };
+export const addGame = async (game:any) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/games`, {
+      method: "POST",
+      credentials: "include",
+      body: game,
+      headers: {
+        Cookie: `userToken=${token}`,
+      },
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    throw error;
+  } finally {
+    revalidatePath("/game");
+  }
+};
 
 
+export const deleteGame = async (platform:string, id:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(
+      `${config.server}/api/games/${id}?platformName=${platform}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `userToken=${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.log("error", error);
+  } finally {
+    revalidatePath("/game");
+  }
+};
+
+export const getSubordinates = async (id:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/users/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSubordinateTransactions = async (id:number, page:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(
+      `${config.server}/api/transactions/${id}?page=${page}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `userToken=${token}`,
+        },
+        next: { tags: ["client"] },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    console.log(data);
+    return { data };
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const getSubordinateClients = async (id:string, page:number) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(
+      `${config.server}/api/users/subordinates?id=${id}&page=${page}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `userToken=${token}`,
+        },
+        next: { tags: ["client"] },
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    console.log(data);
+    return { data };
+  } catch (error) {
+    console.log("error", error);
+  }finally {
+    revalidatePath("/clients");
+  }
+};
 
 
-// export const deleteGame = async (platform, id) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(
-//       `${config.server}/api/games/${id}?platformName=${platform}`,
-//       {
-//         method: "DELETE",
-//         credentials: "include",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Cookie: `userToken=${token}`,
-//         },
-//       }
-//     );
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
-//     return { data };
-//   } catch (error) {
-//     console.log("error", error);
-//   } finally {
-//     revalidatePath("/game");
-//   }
-// };
 
-// export const addGame = async (game) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(`${config.server}/api/games`, {
-//       method: "POST",
-//       credentials: "include",
-//       body: game,
-//       headers: {
-//         Cookie: `userToken=${token}`,
-//       },
-//     });
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
-//     return { data };
-//   } catch (error) {
-//     throw error;
-//   } finally {
-//     revalidatePath("/game");
-//   }
-// };
+export const addPlatform = async (platform:any) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/games/platforms`, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(platform), 
+      headers: {
+        "Content-Type": "application/json", 
+        Cookie: `userToken=${token}`,
+      },
+    });
 
+    console.log(response);
 
-// export const addPlatform = async (platform) => {
-//   const token = await getCookie();
-//   try {
-//     const response = await fetch(`${config.server}/api/games/platforms`, {
-//       method: "POST",
-//       credentials: "include",
-//       body: JSON.stringify(platform), // Ensure platform is stringified
-//       headers: {
-//         "Content-Type": "application/json", // Specify content type
-//         Cookie: `userToken=${token}`,
-//       },
-//     });
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
 
-//     console.log(response);
+    return { data };
+  } catch (error) {
+    throw error;
+  }
+};
 
-//     if (!response.ok) {
-//       const error = await response.json();
-//       return { error: error.message };
-//     }
-//     const data = await response.json();
+export const getToggle = async () => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/toggle`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
 
-//     return { data };
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+export const UpdateMaintenance = async (availableAt:string) => {
+  const token = await getCookie();
+  try {
+    const response = await fetch(`${config.server}/api/toggle`, {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify({ availableAt }),
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userToken=${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      return { error: error.message };
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
 
 // export async function getPlatform() {
 //   const token = await getCookie();
