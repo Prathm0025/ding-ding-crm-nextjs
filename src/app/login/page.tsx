@@ -60,7 +60,7 @@ const Login = () => {
                         <div>
                             <Image src="/assets/images/logo.png" alt="logo" width={600} height={600} quality={100} className="w-[30%] mx-auto" />
                             <h1 className="text-center font-semibold leading-none text-3xl lg:text-4xl text-[#fff] drop-shadow-xl">
-                                Ding Ding
+                                Ding Ding CRM
                             </h1>
                         </div>
                         <form
