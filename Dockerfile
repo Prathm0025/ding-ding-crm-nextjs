@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Use a lighter image for the final build
-FROM node:18 AS runner
+FROM node:18-alpine AS runner
 
 # Set the working directory
 WORKDIR /app
