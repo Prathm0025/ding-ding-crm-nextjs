@@ -1,13 +1,13 @@
-name: Deploy CRM
+name: Deploy Crm
 
 on:
   pull_request:
     branches:
-      - dev  # Trigger on pull requests to the dev branch
+      - dev  
   push:
     branches:
-      - dev  # Trigger on pushes to the dev branch
-
+      - dev  
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,22 +23,24 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@3.110.140.210 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
             # Switch to root user
             sudo -i
+
+            # Check if the repository exists, if not clone the dev branch directly
+            git clone -b dev git@github.com:Prathm0025/ding-ding-crm-nextjs.git
             
-            # Navigate to the CRM project directory in the root
-            cd ding-ding-crm-nextjs
-            
-            # Pull the latest changes from the dev branch
+            cd /root/ding-ding-crm-nextjs
+            git checkout dev
             git pull origin dev
-            
-            # Stop existing containers and remove them
+
+            # Build the new Docker image without stopping the running containers
+            docker-compose build
+
+            # After the image is built, stop the existing containers and immediately start the new ones
             docker-compose down
-            
-            # Build and start the containers in detached mode
-            docker-compose up --build -d
-            
-            # Optional: Clean up unused Docker images and containers (comment out if not needed)
-            # docker image prune -f
+            docker-compose up -d
+
+            # Clean up unused Docker images and containers 
+            docker image prune -f
           EOF
