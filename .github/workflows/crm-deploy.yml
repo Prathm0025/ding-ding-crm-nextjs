@@ -34,14 +34,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
         run: |
-           # Fetch the dev-build branch
+      
            git fetch origin dev-build:dev-build || true # Ignore error if it doesn't exist
            
-           # Check if the dev-build branch exists
            if git branch --list | grep -q "dev-build"; then
                git checkout dev-build
            else
-               # Create the branch if it doesn't exist
                git checkout -b dev-build
            fi
 
@@ -50,7 +48,7 @@ jobs:
            
            # Remove the existing src folder if it exists and copy the new one
            rm -rf src
-           cp -r ./src ./src
+           git checkout dev -- src
 
            # Stage only the src folder
            git add src
