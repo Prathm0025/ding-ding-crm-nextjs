@@ -34,9 +34,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
         run: |
-           git fetch origin dev-build:dev-build || git # Ensure you're up-to-date with dev-build
-           git stash # Temporarily store local changes
-           git checkout dev-build 
+           # Fetch the dev-build branch
+           git fetch origin dev-build:dev-build || true # Ignore error if it doesn't exist
+           
+           # Check if the dev-build branch exists
+           if git branch --list | grep -q "dev-build"; then
+               git checkout dev-build
+           else
+               # Create the branch if it doesn't exist
+               git checkout -b dev-build
+           fi
+
            git config user.name "Prathm0025"
            git config user.email "prathamesh@underpinservices.com"
            rm -f package.json
@@ -44,7 +52,6 @@ jobs:
            git add package.json
            git commit -m "update package.json" || echo "No changes to commit"
            git push --force origin dev-build
-           git stash pop || echo "No local changes to pop"
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
