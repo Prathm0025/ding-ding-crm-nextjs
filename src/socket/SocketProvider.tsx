@@ -1,10 +1,22 @@
 "use client";
+import {
+  addUser,
+  removeUser,
+  updateUser,
+} from "@/redux/features/activeUsersSlice";
 import { config } from "@/utils/config";
 import { useAppDispatch } from "@/utils/hooks";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { io, Socket } from "socket.io-client";
+
+export enum eventType {
+  JOIN_PLATFORM = "join_platform",
+  ENTER_GAME = "enter_game",
+  EXIT_GAME = "exit_game",
+  EXIT_PLATFORM = "exit_platform",
+}
 
 interface SocketContextType {
   socket: Socket | null;
@@ -27,7 +39,7 @@ export const SocketProvider: React.FC<{
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-    useEffect(() => {
+  useEffect(() => {
     if (token) {
       const socketInstance = io(`${config?.server}`, {
         auth: { token },
@@ -38,17 +50,52 @@ export const SocketProvider: React.FC<{
         console.log("Connected with socket id:", socketInstance?.id);
       });
 
-      socketInstance.on("data", (data: any) => {
-        // switch (data.type) {
-        //   case "CATEGORIES": //render sidebar categories and events
-           
-          
-        //   default:
-        //     break;
-        // }
-        //
+      socketInstance.on("activeUsers", (activeUsers: any[]) => {
+        // Add all active users when the manager connects
+        activeUsers.forEach((user) => {
+          dispatch(
+            addUser({
+              username: user.username,
+              playerData: {
+                credits: user.credits,
+                activeGame: user.currentGame,
+              },
+            })
+          );
+        });
       });
 
+      socketInstance.on("player", (data: any) => {
+        switch (data.type) {
+          case "join_platform":
+            console.log("DATA : ", data);
+            dispatch(
+              addUser({
+                username: data?.data?.username,
+                playerData: { credits: data?.data.credits, activeGame: null },
+              })
+            );
+            break;
+          case "enter_game":
+            dispatch(
+              updateUser({
+                username: data?.data?.username,
+                activeGame: data?.data?.gameId,
+              })
+            );
+            break;
+          case "exit_game":
+            dispatch(
+              updateUser({ username: data?.data?.username, activeGame: null })
+            );
+            break;
+          case "exit_platform":
+            dispatch(removeUser({ username: data?.data?.username }));
+            break;
+          default:
+            console.warn(`Unhandled event type: ${data.type}`);
+        }
+      });
       socketInstance.on("error", (error) => {
         toast.remove();
         toast.error(`Error from server: ${error.message}`);
