@@ -13,6 +13,7 @@ import Profile from "../svg/Profile";
 const Sidebar = () => {
   const isSidebar = useAppSelector((state) => state.globlestate?.showSideBar)
   const dispatch = useAppDispatch()
+  const pathname = usePathname();
   const [user, setUser] = useState<{
     username: string;
     role: string;
@@ -70,12 +71,12 @@ const Sidebar = () => {
           nested: [
             {
               LinkName: "My Clients",
-              Link: `/clients/my?page=1`,
+              Link: `/clients/my`,
               icon: "",
             },
             {
               LinkName: "All Clients",
-              Link: "/clients/all?page=1",
+              Link: "/clients/all",
               icon: "",
             },
             {
@@ -111,12 +112,12 @@ const Sidebar = () => {
           nested: [
             {
               LinkName: "My Transaction",
-              Link: "/transactions/my?page=1",
+              Link: "/transactions/my",
               icon: "",
             },
             {
               LinkName: "All Transaction",
-              Link: "/transactions/all?page=1",
+              Link: "/transactions/all",
               icon: "",
             },
           ],
@@ -266,10 +267,10 @@ const Sidebar = () => {
                     <button
                       onClick={() => toggleDropdown(ind == 0 ? -1 : ind)}
                       type="button"
-                      className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-200 dark:text-white dark:hover:bg-gray-700"
+                      className={`flex items-center w-full p-2 text-base ${pathname===item?.Link&&'bg-gray-200 dark:bg-gray-700'} text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-200 dark:text-white dark:hover:bg-gray-700`}
                     >
                       {item?.icon}
-                      <span className="flex-1 ms-3 text-left group-hover:text-[#27a5ff] rtl:text-right whitespace-nowrap">
+                      <span className={`flex-1 ${pathname===item?.Link&&'text-[#27a5ff]'} ms-3 text-left group-hover:text-[#27a5ff] rtl:text-right whitespace-nowrap`}>
                         {item?.LinkName}
                       </span>
                       <svg
@@ -300,7 +301,7 @@ const Sidebar = () => {
                       <li key={subind} onClick={()=>dispatch(setSidebarshow(false))}>
                         <Link
                           href={subitem?.Link}
-                          className="flex items-center w-full p-2 dark:text-white dark:hover:text-[#27a5ff] hover:text-[#27a5ff] transition duration-75 rounded-lg pl-11  hover:bg-gray-200 dark:hover:bg-gray-700"
+                          className={`flex items-center w-full p-2  ${pathname===subitem?.Link?'text-[#27a5ff] dark:bg-gray-700 bg-gray-200':'text-gray-600 dark:text-white'} dark:hover:text-[#27a5ff] hover:text-[#27a5ff] transition duration-75 rounded-lg pl-11  hover:bg-gray-200 dark:hover:bg-gray-700`}
                         >
                           {subitem?.LinkName}
                         </Link>

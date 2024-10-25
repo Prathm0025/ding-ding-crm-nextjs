@@ -12,8 +12,8 @@ export default function ActiveUsers() {
   );
 
   return (
-    <div className="container mx-auto py-8 px-4  min-h-screen">
-      <div className="bg-gray-200 dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+    <div className=" mx-auto py-2  min-h-screen">
+      <div className="bg-gray-200 dark:bg-gray-800 rounded shadow-lg overflow-hidden">
         <div className="p-6 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
           <h2 className="text-2xl font-bold text-gray-600 dark:text-white flex items-center gap-2">
             <svg

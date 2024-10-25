@@ -6,7 +6,7 @@ import Dashboard from './Dashboard';
 import Subclient from './Subclient';
 import SubclientTransaction from './SubclientTransaction';
 
-const Subordinates = ({ subordinateData, id ,page}: any) => {
+const Subordinates = ({ subordinateData, id, page }: any) => {
     const [option, setOption] = React.useState("report");
     const router = useRouter()
     const pathname = usePathname()
@@ -20,7 +20,7 @@ const Subordinates = ({ subordinateData, id ,page}: any) => {
             ModalContent = <Subclient subordinates_id={id} page={page} />;
             break;
         case "transactions":
-            ModalContent = <SubclientTransaction subordinates_id={id} page={page}/>;
+            ModalContent = <SubclientTransaction subordinates_id={id} page={page} />;
             break;
         default:
             ModalContent = null;
