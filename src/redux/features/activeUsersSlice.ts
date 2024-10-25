@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface PlayerData {
-    credits: number;
-    activeGame: string | null;
-}
+import { CurrentGame, PlayerData, SpinData } from '@/utils/common';
 
 interface ActiveUsersState {
     users: Record<string, PlayerData>;
@@ -17,22 +13,42 @@ const activeUsersSlice = createSlice({
     name: 'activeUsers',
     initialState,
     reducers: {
-        addUser(state, action: PayloadAction<{ username: string, playerData: PlayerData }>) {
-            const { username, playerData } = action.payload;
-            state.users[username] = playerData;
+        addPlayer(state, action: PayloadAction<PlayerData>) {
+            const playerData = action.payload;
+            state.users[playerData.playerId] = playerData;
         },
-        updateUser(state, action: PayloadAction<{ username: string, activeGame: string | null }>) {
-            const { username, activeGame } = action.payload;
-            if (state.users[username]) {
-                state.users[username].activeGame = activeGame;
+        removePlayer(state, action: PayloadAction<{ playerId: string }>) {
+            delete state.users[action.payload.playerId];
+        },
+        enterGame(state, action: PayloadAction<CurrentGame>) {
+            const { playerId } = action.payload;
+            if (state.users[playerId]) {
+                state.users[playerId].currentGame = action.payload;
             }
         },
-        removeUser(state, action: PayloadAction<{ username: string }>) {
-            delete state.users[action.payload.username];
+        exitGame(state, action: PayloadAction<{ playerId: string }>) {
+            if (state.users[action.payload.playerId]) {
+                state.users[action.payload.playerId].currentGame = null;
+            }
+        },
+        // Updated to handle full payload and avoid NaN issues
+        updateSpin(state, action: PayloadAction<CurrentGame>) {
+            const { playerId, ...updatedGameData } = action.payload;
+            const user = state.users[playerId];
+            if (user && user.currentGame) {
+                // Update all fields from the payload to ensure proper synchronization
+                user.currentGame = {
+                    ...user.currentGame,
+                    ...updatedGameData,
+                    totalBetAmount: Number(updatedGameData.totalBetAmount || 0),
+                    totalWinAmount: Number(updatedGameData.totalWinAmount || 0),
+                    totalSpins: updatedGameData.totalSpins,
+                    spinData: updatedGameData.spinData,
+                };
+            }
         },
     },
 });
 
-
-export const { addUser, updateUser, removeUser } = activeUsersSlice.actions;
+export const { addPlayer, removePlayer, enterGame, updateSpin, exitGame } = activeUsersSlice.actions;
 export default activeUsersSlice.reducer;
