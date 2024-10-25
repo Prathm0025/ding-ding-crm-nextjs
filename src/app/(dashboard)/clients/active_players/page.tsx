@@ -1,85 +1,82 @@
 "use client";
 
-import { useState } from "react";
 import { useAppSelector } from "@/utils/hooks";
+import { formatDate } from "@/utils/common";
+import { useState, useEffect } from "react";
 
 export default function ActiveUsers() {
   const activeUsers = useAppSelector((state) => state.activeUsers.users);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [sessionDuration, setSessionDuration] = useState(0);
 
-  const filteredUsers = Object.entries(activeUsers).filter(([username]) =>
-    username.toLowerCase().includes(searchTerm.toLowerCase())
+  const selectedUser = selectedUserId ? activeUsers[selectedUserId] : null;
+
+  const filteredUsers = Object.entries(activeUsers).filter(([playerId]) =>
+    playerId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    if (selectedUser?.currentGame?.entryTime) {
+      const entryTime = new Date(selectedUser.currentGame.entryTime).getTime();
+      const updateSessionDuration = () => {
+        const currentTime = new Date().getTime();
+        setSessionDuration(Math.floor((currentTime - entryTime) / 1000));
+      };
+      const intervalId = setInterval(updateSessionDuration, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [selectedUser]);
+
+  const closeModal = () => {
+    setSelectedUserId(null);
+    setSessionDuration(0);
+  };
+
   return (
-    <div className=" mx-auto py-2  min-h-screen">
-      <div className="bg-gray-200 dark:bg-gray-800 rounded shadow-lg overflow-hidden">
-        <div className="p-6 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-          <h2 className="text-2xl font-bold text-gray-600 dark:text-white flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-            Active Users
-          </h2>
+    <div className="container mx-auto py-8 px-4 bg-gray-900 min-h-screen">
+      <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="p-6 bg-gray-700 border-b border-gray-600">
+          <h2 className="text-2xl font-bold text-white">Active Players</h2>
           <div className="mt-4 relative">
             <input
               type="search"
-              placeholder="Search users..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-600 dark:text-white placeholder-gray-400 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Search players..."
+              className="w-full pl-10 pr-4 py-2 bg-gray-600 text-white placeholder-gray-400 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-400 absolute left-3 top-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
           </div>
         </div>
         <div className="p-6">
           {filteredUsers.length > 0 ? (
             <ul className="space-y-4">
-              {filteredUsers.map(([username, playerData]) => (
+              {filteredUsers.map(([playerId, playerData]) => (
                 <li
-                  key={username}
-                  className="bg-gray-700 rounded-lg p-4 shadow-sm"
+                  key={playerId}
+                  className="bg-gray-700 rounded-lg p-4 shadow-sm cursor-pointer"
+                  onClick={() => setSelectedUserId(playerId)}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-semibold text-white">
-                      {username}
+                      {playerId}
                     </span>
                     <span
                       className={`px-2 py-1 rounded-full text-sm ${
-                        playerData.activeGame
+                        playerData.currentGame?.gameId
                           ? "bg-green-800 text-green-200"
                           : "bg-gray-600 text-gray-300"
                       }`}
                     >
-                      {playerData.activeGame || "No Active Game"}
+                      {playerData.currentGame?.gameId || "No Active Game"}
                     </span>
                   </div>
                   <div className="mt-2 text-sm text-gray-400">
-                    Credits: {playerData.credits}
+                    Credits: {playerData.currentCredits}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    Entry Time:{" "}
+                    {formatDate(playerData.entryTime?.toISOString() || null)}
                   </div>
                 </li>
               ))}
@@ -91,6 +88,63 @@ export default function ActiveUsers() {
           )}
         </div>
       </div>
+
+      {/* Modal for Game Details */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full relative overflow-hidden">
+            <button
+              onClick={closeModal}
+              className="absolute top-3 right-3 text-gray-400 hover:text-white"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-bold text-white mb-4">
+              {selectedUser.playerId}'s Game Details
+            </h3>
+            {selectedUser.currentGame ? (
+              <div>
+                <p className="text-gray-400 mb-2">
+                  <strong>Game ID:</strong> {selectedUser.currentGame.gameId}
+                </p>
+                <p className="text-gray-400 mb-2">
+                  <strong>Credits at Entry:</strong>{" "}
+                  {selectedUser.currentGame.creditsAtEntry}
+                </p>
+                <p className="text-gray-400 mb-2">
+                  <strong>Total Spins:</strong>{" "}
+                  {selectedUser.currentGame.totalSpins}
+                </p>
+                <p className="text-gray-400 mb-2">
+                  <strong>Total Bet Amount:</strong>{" "}
+                  {selectedUser.currentGame.totalBetAmount}
+                </p>
+                <p className="text-gray-400 mb-2">
+                  <strong>Total Win Amount:</strong>{" "}
+                  {selectedUser.currentGame.totalWinAmount}
+                </p>
+                <p className="text-gray-400 mb-2">
+                  <strong>Session Duration:</strong> {sessionDuration} seconds
+                </p>
+                <div className="mt-4 text-gray-400">
+                  <strong>Spin Data:</strong>
+                  {/* Scrollable container for spin data */}
+                  <ul className="mt-2 space-y-2 max-h-48 overflow-y-auto">
+                    {selectedUser.currentGame.spinData &&
+                      selectedUser.currentGame.spinData.map((spin, index) => (
+                        <li key={index} className="bg-gray-900 p-2 rounded-md">
+                          Bet: {spin.betAmount}, Win: {spin.winAmount}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-400">No active game details available.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

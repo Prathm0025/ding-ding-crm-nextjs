@@ -1,22 +1,19 @@
 "use client";
+
 import {
-  addUser,
-  removeUser,
-  updateUser,
+  addPlayer,
+  enterGame,
+  exitGame,
+  removePlayer,
+  updateSpin,
 } from "@/redux/features/activeUsersSlice";
+import { CurrentGame, EventType } from "@/utils/common";
 import { config } from "@/utils/config";
 import { useAppDispatch } from "@/utils/hooks";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { io, Socket } from "socket.io-client";
-
-export enum eventType {
-  JOIN_PLATFORM = "join_platform",
-  ENTER_GAME = "enter_game",
-  EXIT_GAME = "exit_game",
-  EXIT_PLATFORM = "exit_platform",
-}
 
 interface SocketContextType {
   socket: Socket | null;
@@ -50,52 +47,28 @@ export const SocketProvider: React.FC<{
         console.log("Connected with socket id:", socketInstance?.id);
       });
 
-      socketInstance.on("activeUsers", (activeUsers: any[]) => {
-        // Add all active users when the manager connects
-        activeUsers.forEach((user) => {
+      socketInstance.on("activePlayers", (activePlayersData) => {
+        console.log("Active Players Data:", activePlayersData);
+        activePlayersData.forEach((player) => {
           dispatch(
-            addUser({
-              username: user.username,
-              playerData: {
-                credits: user.credits,
-                activeGame: user.currentGame,
-              },
+            addPlayer({
+              playerId: player.playerId,
+              managerName: player.managerName,
+              initialCredits: player.initialCredits,
+              currentCredits: player.currentCredits,
+              entryTime: new Date(player.entryTime),
+              exitTime: player.exitTime ? new Date(player.exitTime) : null,
+              currentRTP: player.currentRTP,
+              currentGame: player.currentGame || {},
             })
           );
         });
       });
 
-      socketInstance.on("player", (data: any) => {
-        switch (data.type) {
-          case "join_platform":
-            console.log("DATA : ", data);
-            dispatch(
-              addUser({
-                username: data?.data?.username,
-                playerData: { credits: data?.data.credits, activeGame: null },
-              })
-            );
-            break;
-          case "enter_game":
-            dispatch(
-              updateUser({
-                username: data?.data?.username,
-                activeGame: data?.data?.gameId,
-              })
-            );
-            break;
-          case "exit_game":
-            dispatch(
-              updateUser({ username: data?.data?.username, activeGame: null })
-            );
-            break;
-          case "exit_platform":
-            dispatch(removeUser({ username: data?.data?.username }));
-            break;
-          default:
-            console.warn(`Unhandled event type: ${data.type}`);
-        }
+      socketInstance.on("PLATFORM", (data: any) => {
+        handlePlatformEvent(data);
       });
+
       socketInstance.on("error", (error) => {
         toast.remove();
         toast.error(`Error from server: ${error.message}`);
@@ -106,6 +79,117 @@ export const SocketProvider: React.FC<{
       };
     }
   }, [token]);
+  const handlePlatformEvent = (data: any) => {
+    console.log("Received PLATFORM event:", data);
+    switch (data.type) {
+      case EventType.ENTERED_PLATFORM:
+        handleEnteredPlatform(data.payload);
+        break;
+
+      case EventType.EXITED_PLATFORM:
+        handleExitedPlatform(data.payload);
+        break;
+
+      case EventType.ENTERED_GAME:
+        handleEnteredGame(data.payload);
+        break;
+
+      case EventType.UPDATED_SPIN:
+        handleUpdatedSpin(data.payload);
+        break;
+
+      case EventType.EXITED_GAME:
+        handleExitedGame(data.payload);
+        break;
+
+      default:
+        console.warn(`Unhandled event type: ${data.type}`);
+    }
+  };
+
+  const handleEnteredPlatform = (payload: any) => {
+    const {
+      playerId,
+      managerName,
+      initialCredits,
+      currentCredits,
+      entryTime,
+      exitTime,
+      currentRTP,
+      currentGame,
+    } = payload;
+
+    dispatch(
+      addPlayer({
+        playerId,
+        managerName,
+        initialCredits,
+        currentCredits,
+        entryTime: new Date(entryTime),
+        exitTime: exitTime ? new Date(exitTime) : null,
+        currentRTP,
+        currentGame,
+      })
+    );
+
+    toast.success(`${playerId} has entered the platform`);
+  };
+
+  const handleExitedPlatform = (payload: any) => {
+    const { playerId } = payload;
+    dispatch(removePlayer({ playerId }));
+    toast(`${playerId} has exited the platform`, {
+      icon: "🚪",
+    });
+  };
+
+  const handleEnteredGame = (payload: any) => {
+    const {
+      playerId,
+      gameId,
+      sessionId,
+      entryTime,
+      exitTime,
+      creditsAtEntry,
+      creditsAtExit,
+      totalSpins,
+      totalBetAmount,
+      totalWinAmount,
+      spinData,
+      sessionDuration,
+    } = payload;
+
+    dispatch(
+      enterGame({
+        playerId,
+        gameId,
+        sessionId,
+        entryTime: new Date(entryTime), // Pass Date object directly
+        exitTime: exitTime ? new Date(exitTime) : null, // Keep as Date or null
+        creditsAtEntry,
+        creditsAtExit,
+        totalSpins,
+        totalBetAmount,
+        totalWinAmount,
+        spinData,
+        sessionDuration,
+      })
+    );
+
+    toast.success(`${playerId} has entered the game ${gameId}`);
+  };
+
+  const handleExitedGame = (payload: any) => {
+    const { playerId } = payload;
+    dispatch(exitGame({ playerId }));
+    toast(`${playerId} has exited the game`, {
+      icon: "🎮",
+    });
+  };
+
+  const handleUpdatedSpin = (summary: CurrentGame) => {
+    dispatch(updateSpin(summary)); // Use the full payload to ensure all fields are updated
+  };
 
   return (
     <SocketContext.Provider value={{ socket }}>
