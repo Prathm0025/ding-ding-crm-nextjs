@@ -108,7 +108,7 @@ const Table = ({ data, tableData, page, gamePlatform, paginationData }: any) => 
                                             <td key={td} className={tdClass}>
                                                 {td === "updatedAt" ? new Date(item[td]).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
                                                     : td === 'thumbnail' ? <Image src={item[td]} alt={item[td]} quality={100} width={400} height={400} className="w-[80px]" />
-                                                        : td === 'username' ? <Link href={`/clients/${item?._id}`} className="hover:text-[#27a5ff] hover:scale-110 inline-block transition-all">{item[td]}</Link>
+                                                        : td === 'username' ? <Link href={`/clients/${item?._id}`} className="hover:text-[#FFD117] hover:scale-110 inline-block transition-all">{item[td]}</Link>
                                                             : item[td]}
                                             </td>
                                         );
@@ -118,7 +118,7 @@ const Table = ({ data, tableData, page, gamePlatform, paginationData }: any) => 
                                         <td>
                                             <div className="flex items-center justify-start pl-5 space-x-5">
                                                 <div className="relative">
-                                                    <button onClick={() => handleOpen(ind)} className="hover:bg-gray-200 dark:hover:bg-black transition-all text-[#27a5ff] p-1 rounded-lg">
+                                                    <button onClick={() => handleOpen(ind)} className="hover:bg-gray-200 dark:hover:bg-black transition-all text-[#FFD117] p-1 rounded-lg">
                                                         <Threedots />
                                                     </button>
                                                     <div className={` ${openIndex === ind ? 'scale-100' : 'scale-0'} z-[51] transition-all absolute ${popup?.includes(ind) ? 'top-[100%]' : 'bottom-0'} right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
