@@ -48,10 +48,11 @@ export const SocketProvider: React.FC<{
       });
 
       socketInstance.on("activePlayers", (activePlayersData) => {
-        activePlayersData?.forEach((player:any) => {
+        activePlayersData.forEach((player:any) => {
           dispatch(
             addPlayer({
               playerId: player.playerId,
+              status: player?.status,
               managerName: player.managerName,
               initialCredits: player.initialCredits,
               currentCredits: player.currentCredits,
@@ -101,7 +102,7 @@ export const SocketProvider: React.FC<{
         break;
 
       default:
-        
+        console.warn(`Unhandled event type: ${data.type}`);
     }
   };
 
@@ -120,6 +121,7 @@ export const SocketProvider: React.FC<{
     dispatch(
       addPlayer({
         playerId,
+        status,
         managerName,
         initialCredits,
         currentCredits,
@@ -129,16 +131,11 @@ export const SocketProvider: React.FC<{
         currentGame,
       })
     );
-
-    // toast.success(`${playerId} has entered the platform`);
   };
 
   const handleExitedPlatform = (payload: any) => {
     const { playerId } = payload;
     dispatch(removePlayer({ playerId }));
-    // toast(`${playerId} has exited the platform`, {
-    //   icon: "🚪",
-    // });
   };
 
   const handleEnteredGame = (payload: any) => {
@@ -174,15 +171,11 @@ export const SocketProvider: React.FC<{
       })
     );
 
-    // toast.success(`${playerId} has entered the game ${gameId}`);
   };
 
   const handleExitedGame = (payload: any) => {
     const { playerId } = payload;
     dispatch(exitGame({ playerId }));
-    toast(`${playerId} has exited the game`, {
-      icon: "🎮",
-    });
   };
 
   const handleUpdatedSpin = (summary: CurrentGame) => {

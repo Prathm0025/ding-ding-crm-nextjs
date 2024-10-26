@@ -17,7 +17,7 @@
   
   .loader circle {
     fill: none;
-    stroke: hsl(214, 97%, 59%);
+    stroke: #FFD117;
     stroke-width: 2;
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
@@ -60,7 +60,7 @@
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background:#27a5ff;
+    background:#F08D36;
   }
 
   .dark{

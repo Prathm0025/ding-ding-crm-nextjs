@@ -51,6 +51,7 @@ export interface CurrentGame {
 export interface PlayerData {
     playerId: string;
     managerName: string;
+    status: string;  // "active", "inactive"
     initialCredits: number;
     currentCredits: number;
     entryTime: Date | null;
