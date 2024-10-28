@@ -619,14 +619,16 @@ export const UpdateMaintenance = async (availableAt:string) => {
 };
 
 
-export const GetAllClients = async (search:string,page:number,query?:any) => {
+export const GetAllClients = async (search: string, page: number, query?: any) => {
   const token = await getCookie();
   try {
-    let filterQuery = "{}";
+    let filterQuery = '';
     if (query) {
-      filterQuery = JSON.stringify(query);
+      if (query?.credits?.From > 0 && query?.credits?.To > 0) {
+        filterQuery = JSON.stringify(query);
+      }
+      
     }
-    
     const response = await fetch(
       `${config.server}/api/users/all?filter=${search}&page=${page}&search=${filterQuery}`,
       {
@@ -652,9 +654,12 @@ export const GetAllClients = async (search:string,page:number,query?:any) => {
 export const GetMyClients = async (search:string,page:number,query?:any) => {
   const token = await getCookie();
   try {
-    let filterQuery = "{}";
+    let filterQuery = '';
     if (query) {
-      filterQuery = JSON.stringify(query);
+      if (query?.credits?.From > 0 && query?.credits?.To > 0) {
+        filterQuery = JSON.stringify(query);
+      }
+      
     }
     
     const response = await fetch(

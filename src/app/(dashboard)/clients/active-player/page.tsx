@@ -6,6 +6,7 @@ import Modal from "@/components/Modal";
 import { useSocket } from "@/socket/SocketProvider";
 import History from "@/components/svg/History";
 import Delete from "@/components/svg/Delete";
+import Close from "@/components/svg/Close";
 
 export default function ActiveUsers() {
   const activeUsers = useAppSelector((state) => state.activeUsers.users);
@@ -208,6 +209,8 @@ export default function ActiveUsers() {
       {
         sessionData?.length > 0 &&
         <Modal closeModal={handelCloseSession}>
+            <button onClick={handelCloseSession} className='absolute top-2 right-2'><Close/></button>
+            
           <h3 className="text-xl font-bold capitalize text-center text-gray-600 dark:text-white mb-4">
             Player Game History
           </h3>
@@ -289,7 +292,6 @@ export default function ActiveUsers() {
                 <p className="text-gray-400 text-center">No active game details available.</p>
               )}
           </div>
-
         </Modal>
       }
       {/* Exit User Modal */}
