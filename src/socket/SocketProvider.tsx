@@ -7,6 +7,7 @@ import {
   removePlayer,
   updateSpin,
 } from "@/redux/features/activeUsersSlice";
+import { setUsercredit } from "@/redux/user/userSlice";
 import { CurrentGame, EventType } from "@/utils/Types";
 import { config } from "@/utils/config";
 import { useAppDispatch } from "@/utils/hooks";
@@ -67,6 +68,17 @@ export const SocketProvider: React.FC<{
 
       socketInstance.on("PLATFORM", (data: any) => {
         handlePlatformEvent(data);
+      });
+
+      socketInstance.on("data", (data: any) => {
+        switch (data.type) {
+          case "CREDITS":
+            hadleCurrentUserCredits(data?.payload);
+            break;
+
+          default:
+            console.warn(`Unhandled event type: ${data.type}`);
+        }
       });
 
       socketInstance.on("error", (error) => {
@@ -173,6 +185,8 @@ export const SocketProvider: React.FC<{
 
   };
 
+  
+
   const handleExitedGame = (payload: any) => {
     const { playerId } = payload;
     dispatch(exitGame({ playerId }));
@@ -180,6 +194,16 @@ export const SocketProvider: React.FC<{
 
   const handleUpdatedSpin = (summary: CurrentGame) => {
     dispatch(updateSpin(summary)); // Use the full payload to ensure all fields are updated
+  };
+
+
+  const hadleCurrentUserCredits = (payload: any) => {
+    const { credits, role } = payload;
+    if (role === "company") {
+      dispatch(setUsercredit('Infinite'));
+    } else {
+      dispatch(setUsercredit(credits));
+    }
   };
 
   return (
