@@ -10,7 +10,7 @@ import Setting from "../svg/Setting";
 import Modal from "../Modal";
 import Add_Platform from "../modals/Add_Platform";
 import Maintenance from "../modals/Maintenance";
-import { useAppDispatch } from "@/utils/hooks";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import { setSidebarshow } from "@/redux/ReduxSlice";
 
 const Header = () => {
@@ -21,6 +21,8 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   const dispatch = useAppDispatch()
   const [modaltype, setModalType] = useState('');
+  const userCredit = useAppSelector((state) => state?.user?.userCredit)
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -130,12 +132,12 @@ const Header = () => {
             </div>
           </label>}
           <div className="dark:bg-[#dfdfdf24] py-1 px-4 rounded-md bg-gray-300 text-black text-opacity-60 dark:text-white  text-lg">
-            <p className="text-gray-900 dark:text-white">
+            {userCredit&&<p className="text-gray-900 dark:text-white">
               Credits :{" "}
               <span className=" text-gray-700 dark:text-[#dfdfdf9c]">
-                {user?.credits}
+                {userCredit}
               </span>
-            </p>
+            </p>}
           </div>
           {user && <div className="lg:flex hidden items-center space-x-1.5">
             <Profile />
