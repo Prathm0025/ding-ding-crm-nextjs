@@ -10,9 +10,10 @@ export default function RootLayout({
 
 
   return (
-    <html lang="en" className="dark:bg-black bg-white">
+    <html lang="en">
       <body>
         <div id="loader"></div>
+        <div id="modal"></div>
         <ThemeProvider enableSystem={true} attribute="class">
           <Toaster position="bottom-center" />
           {children}
