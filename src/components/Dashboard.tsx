@@ -12,6 +12,7 @@ import jwt from 'jsonwebtoken'
 import TodayDate from './svg/Date'
 import { formatAmount } from '@/utils/common'
 import { useAppSelector } from '@/utils/hooks'
+import Percentage from './svg/Percentage'
 
 const Dashboard = ({ subordinates_id, userDetail }: any) => {
     const [reporttype, setReportType] = useState('daily')
@@ -89,7 +90,7 @@ const Dashboard = ({ subordinates_id, userDetail }: any) => {
         {
             title: 'Holdings %',
             amount: `${userCredit && data?.recharge > 0 ? (Math.round((userCredit / userDetail?.data?.totalRecharged) * 100)) : 0}%`,
-            icon: <Player />
+            icon: <Percentage />
         }
     ]
 
