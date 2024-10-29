@@ -7,7 +7,7 @@ const GetPlayerGameHistory = ({ username, closeModal }: any) => {
     const { socket } = useSocket();
     const [sessionData, setSessionData] = useState<any[]>([]);
     const [entryDate, setEntryDate] = useState<string>("");
-    const [showFilter,setShowFilter]=useState(false)
+    const [showFilter, setShowFilter] = useState(false)
     const getPlayerSession = (username: string) => {
         socket?.emit(
             "data",
@@ -36,8 +36,8 @@ const GetPlayerGameHistory = ({ username, closeModal }: any) => {
     return (
         <div className='relative'>
             <div className='relative'>
-                <button onClick={()=>setShowFilter(!showFilter)} className='dark:text-white text-gray-700'><Filter /></button>
-                <select onChange={(e) => setEntryDate(e?.target?.value)} className={`top-[100%] ${showFilter?'scale-100':'scale-0'} transition-all left-0 absolute p-2 rounded-md text-black overflow-y-auto dark:text-white bg-gray-200 dark:bg-gray-400 outline-none `}>
+                <button onClick={() => setShowFilter(!showFilter)} className='dark:text-white text-gray-700'><Filter /></button>
+                <select onChange={(e) => setEntryDate(e?.target?.value)} className={`top-[100%] ${showFilter ? 'scale-100' : 'scale-0'} transition-all left-0 absolute p-2 rounded-md text-black overflow-y-auto dark:text-white bg-gray-200 dark:bg-gray-400 outline-none `}>
                     <option value={''}>Select Date</option>
 
                     {
