@@ -17,7 +17,7 @@
   
   .loader circle {
     fill: none;
-    stroke: hsl(214, 97%, 59%);
+    stroke: #FFD117;
     stroke-width: 2;
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
@@ -46,3 +46,32 @@
       stroke-dashoffset: -125px;
     }
   }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #FFD117;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background:#F08D36;
+  }
+
+  .dark{
+    background-color: black;
+  }
+
+  @keyframes pulse {
+    50% {
+        opacity: .5;
+    }
+}
+.animatepulse {
+    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
