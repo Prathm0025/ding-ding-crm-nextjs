@@ -61,7 +61,7 @@ const Login = () => {
                         <div className="pt-5">
                             <div className="mx-auto pb-3 flex justify-center"><Logo/></div>
                             <h1 className="text-center font-semibold leading-none text-3xl lg:text-4xl text-[#fff] drop-shadow-xl">
-                                Ding Ding CRM
+                                Ding Ding
                             </h1>
                         </div>
                         <form
